@@ -1,0 +1,40 @@
+<%= form_with model: @note do |form| %>
+  <% if @note.errors.any? %>
+    <div>
+      <h3><%= pluralize(@note.errors.count, "error") %> prevented this note from being saved:</h3>
+
+      <ul>
+        <% @note.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :title %>
+    <%= form.text_field :title, required: true %>
+  </div>
+
+  <div>
+    <%= form.label :note_type %>
+    <%= form.select :note_type,
+      ["ruby", "rails", "javascript", "sql", "troubleshooting"],
+      { include_blank: "Select a type" },
+      required: true %>
+  </div>
+
+  <div>
+    <%= form.label :content %>
+    <%= form.text_area :content, rows: 12 %>
+  </div>
+
+  <div>
+    <%= form.label :favorite %>
+    <%= form.check_box :favorite %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
