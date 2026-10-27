@@ -1,32 +1,60 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe "Notes", type: :request do
-  describe "GET /index" do
+  let(:password) { "Password123!" }
+
+  let!(:user) do
+    User.create!(
+      email_address: "notes@example.com",
+      password: password,
+      password_confirmation: password
+    )
+  end
+
+  let!(:note) do
+    user.notes.create!(
+      title: "Ruby Basics",
+      content: "Learning Ruby and Rails",
+      note_type: "rails"
+    )
+  end
+
+  before do
+    post session_path, params: {
+      email_address: user.email_address,
+      password: password
+    }
+  end
+
+  describe "GET /notes" do
     it "returns http success" do
-      get "/notes/index"
+      get notes_path
+
       expect(response).to have_http_status(:success)
     end
   end
 
-  describe "GET /show" do
+  describe "GET /notes/:id" do
     it "returns http success" do
-      get "/notes/show"
+      get note_path(note)
+
       expect(response).to have_http_status(:success)
     end
   end
 
-  describe "GET /new" do
+  describe "GET /notes/new" do
     it "returns http success" do
-      get "/notes/new"
+      get new_note_path
+
       expect(response).to have_http_status(:success)
     end
   end
 
-  describe "GET /edit" do
+  describe "GET /notes/:id/edit" do
     it "returns http success" do
-      get "/notes/edit"
+      get edit_note_path(note)
+
       expect(response).to have_http_status(:success)
     end
   end
-
 end

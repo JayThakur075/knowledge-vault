@@ -2,6 +2,47 @@
 
 <p>Your personal library of technical knowledge.</p>
 
+</br>
+<%= form_with url: notes_path, method: :get do |form| %>
+  <div>
+    <%= form.label :query, "Search notes" %>
+    <%= form.search_field :query,
+      value: params[:query],
+      placeholder: "Search titles and content..." %>
+  </div>
+
+  <div>
+    <%= form.label :note_type, "Filter by type" %>
+
+    <%= form.select :note_type,
+      options_for_select(
+        [
+          ["All types", ""],
+          ["Ruby", "ruby"],
+          ["Rails", "rails"],
+          ["JavaScript", "javascript"],
+          ["SQL", "sql"],
+          ["Troubleshooting", "troubleshooting"]
+        ],
+        params[:note_type]
+      ) %>
+  </div>
+
+  <div>
+    <%= form.check_box :favorite,
+      { checked: params[:favorite] == "true" },
+      "true",
+      "false" %>
+
+    <%= form.label :favorite, "Favorites only" %>
+  </div>
+
+  <%= form.submit "Search" %>
+
+  <%= link_to "Clear filters", notes_path %>
+<% end %>
+</br>
+
 <%= link_to "Create New Note", new_note_path %>
 
 <% if @notes.any? %>

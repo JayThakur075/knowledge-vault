@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "registrations/new"
+  get "registrations/create"
   root "notes#index"
   resources :notes
   resource :session
@@ -15,4 +17,6 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+  get  "/sign_up", to: "registrations#new"
+  post "/sign_up", to: "registrations#create"
 end

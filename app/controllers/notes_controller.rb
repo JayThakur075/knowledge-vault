@@ -4,6 +4,23 @@ class NotesController < ApplicationController
 
   def index
     @notes = Current.user.notes.recent
+
+    if params[:query].present?
+      query = "%#{ActiveRecord::Base.sanitize_sql_like(params[:query])}%"
+
+      @notes = @notes.where(
+        "title LIKE :query OR content LIKE :query",
+        query: query
+      )
+    end
+
+    if params[:note_type].present?
+      @notes = @notes.where(note_type: params[:note_type])
+    end
+
+    if params[:favorite] == "true"
+      @notes = @notes.favorites
+    end
   end
 
   def show
