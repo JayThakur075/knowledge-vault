@@ -21,6 +21,12 @@ class NotesController < ApplicationController
     if params[:favorite] == "true"
       @notes = @notes.favorites
     end
+
+    if params[:category_id].present?
+      @notes = @notes.where(
+        category: Current.user.categories.find(params[:category_id])
+      )
+    end
   end
 
   def show
@@ -31,7 +37,9 @@ class NotesController < ApplicationController
   end
 
   def create
-    @note = Current.user.notes.new(note_params)
+    attributes = note_params.except(:category_id)
+    @note = Current.user.notes.new(attributes)
+    @note.category = assign_category
 
     if @note.save
       redirect_to @note, notice: "Note was successfully created."
@@ -44,7 +52,10 @@ class NotesController < ApplicationController
   end
 
   def update
-    if @note.update(note_params)
+    attributes = note_params.except(:category_id)
+
+    if @note.update(attributes)
+      @note.update!(category: assign_category)
       redirect_to @note, notice: "Note was successfully updated."
     else
       render :edit, status: :unprocessable_entity
@@ -59,6 +70,14 @@ class NotesController < ApplicationController
 
   private
 
+  def assign_category
+    category_id = note_params[:category_id]
+
+    if category_id.present?
+      Current.user.categories.find(category_id)
+    end
+  end
+
   def set_note
     @note = Current.user.notes.find(params[:id])
   end
@@ -68,7 +87,8 @@ class NotesController < ApplicationController
       :title,
       :content,
       :note_type,
-      :favorite
+      :favorite,
+      :category_id
     )
   end
 end

@@ -35,6 +35,18 @@
   </div>
 
   <div>
+    <%= form.label :category_id, "Category" %>
+
+    <%= form.collection_select(
+      :category_id,
+      Current.user.categories.order(:name),
+      :id,
+      :name,
+      { include_blank: "No category" }
+    ) %>
+  </div>
+
+  <div>
     <%= form.submit %>
   </div>
 <% end %>

@@ -1,0 +1,30 @@
+<h1>Categories</h1>
+
+<%= link_to "New Category", new_category_path %>
+<%= link_to "Back to Notes", notes_path %>
+
+<% if @categories.any? %>
+  <% @categories.each do |category| %>
+    <div>
+      <h2>
+        <%= link_to category.name, notes_path(category_id: category.id) %>
+      </h2>
+
+      <p><%= pluralize(category.notes.count, "note") %></p>
+
+      <%= link_to "Edit", edit_category_path(category) %>
+
+      <%= button_to "Delete",
+        category_path(category),
+        method: :delete,
+        form: {
+          data: {
+            turbo_confirm: "Delete this category?"
+          }
+        } %>
+    </div>
+    <hr>
+  <% end %>
+<% else %>
+  <p>You haven't created any categories yet.</p>
+<% end %>

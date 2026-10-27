@@ -60,6 +60,10 @@
         <%= truncate(note.content.to_s, length: 150) %>
       </p>
 
+      <% if note.category %>
+        <p>Category: <%= note.category.name %></p>
+      <% end %>
+
       <%= link_to "Edit", edit_note_path(note) %>
 
       <%= button_to "Delete",

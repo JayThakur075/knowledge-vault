@@ -1,0 +1,20 @@
+<%= form_with model: @category do |form| %>
+  <% if @category.errors.any? %>
+    <div>
+      <h3>Please correct these errors:</h3>
+
+      <ul>
+        <% @category.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name %>
+    <%= form.text_field :name, required: true %>
+  </div>
+
+  <%= form.submit %>
+<% end %>
