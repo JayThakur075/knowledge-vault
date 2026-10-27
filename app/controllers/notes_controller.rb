@@ -42,6 +42,7 @@ class NotesController < ApplicationController
     @note.category = assign_category
 
     if @note.save
+      update_tags
       redirect_to @note, notice: "Note was successfully created."
     else
       render :new, status: :unprocessable_entity
@@ -55,7 +56,10 @@ class NotesController < ApplicationController
     attributes = note_params.except(:category_id)
 
     if @note.update(attributes)
-      @note.update!(category: assign_category)
+      @note.category = assign_category
+      @note.save!
+      update_tags
+
       redirect_to @note, notice: "Note was successfully updated."
     else
       render :edit, status: :unprocessable_entity
@@ -90,5 +94,15 @@ class NotesController < ApplicationController
       :favorite,
       :category_id
     )
+  end
+
+  def update_tags
+    tag_names = params[:tag_names].to_s.split(",").map(&:strip).reject(&:blank?).uniq
+
+    tags = tag_names.map do |name|
+      Tag.find_or_create_by!(name: name)
+    end
+
+    @note.tags = tags
   end
 end

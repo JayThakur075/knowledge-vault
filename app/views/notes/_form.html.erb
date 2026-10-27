@@ -47,6 +47,14 @@
   </div>
 
   <div>
+    <%= label_tag :tag_names, "Tags (comma-separated)" %>
+
+    <%= text_field_tag :tag_names,
+      @note.tags.map(&:name).join(", "),
+      placeholder: "performance, security, interview-prep" %>
+  </div>
+
+  <div>
     <%= form.submit %>
   </div>
 <% end %>

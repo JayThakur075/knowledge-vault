@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_27_074118) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_27_085139) do
   create_table "categories", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "name", null: false
@@ -18,6 +18,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_074118) do
     t.datetime "updated_at", null: false
     t.index ["user_id", "name"], name: "index_categories_on_user_id_and_name", unique: true
     t.index ["user_id"], name: "index_categories_on_user_id"
+  end
+
+  create_table "note_tags", force: :cascade do |t|
+    t.integer "note_id", null: false
+    t.integer "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["note_id", "tag_id"], name: "index_note_tags_on_note_id_and_tag_id", unique: true
+    t.index ["note_id"], name: "index_note_tags_on_note_id"
+    t.index ["tag_id"], name: "index_note_tags_on_tag_id"
   end
 
   create_table "notes", force: :cascade do |t|
@@ -42,6 +52,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_074118) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "tags", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_tags_on_name", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email_address", null: false
     t.string "password_digest", null: false
@@ -51,6 +68,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_074118) do
   end
 
   add_foreign_key "categories", "users"
+  add_foreign_key "note_tags", "notes"
+  add_foreign_key "note_tags", "tags"
   add_foreign_key "notes", "categories"
   add_foreign_key "notes", "users"
   add_foreign_key "sessions", "users"

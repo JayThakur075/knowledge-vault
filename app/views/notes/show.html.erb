@@ -14,5 +14,15 @@
 
 <pre><%= @note.content %></pre>
 
+<h2>Tags</h2>
+
+<% if @note.tags.any? %>
+  <% @note.tags.each do |tag| %>
+    <span><%= tag.name %></span>
+  <% end %>
+<% else %>
+  <p>No tags added yet.</p>
+<% end %>
+
 <%= link_to "Edit", edit_note_path(@note) %>
 <%= link_to "Back to Notes", notes_path %>
