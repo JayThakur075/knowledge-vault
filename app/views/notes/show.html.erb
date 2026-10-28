@@ -9,6 +9,8 @@
   <strong>Favorite:</strong>
   <%= @note.favorite? ? "Yes" : "No" %>
 </p>
+<p><strong>Category:</strong> <%= @note.category&.name || "Uncategorized" %></p>
+<p><strong>Created:</strong> <%= l(@note.created_at, format: :long) %> · <strong>Updated:</strong> <%= l(@note.updated_at, format: :long) %></p>
 
 <h2>Content</h2>
 

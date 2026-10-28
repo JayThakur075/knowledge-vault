@@ -3,30 +3,14 @@ class NotesController < ApplicationController
   before_action :set_note, only: %i[show edit update destroy]
 
   def index
-    @notes = Current.user.notes.recent
-
-    if params[:query].present?
-      query = "%#{ActiveRecord::Base.sanitize_sql_like(params[:query])}%"
-
-      @notes = @notes.where(
-        "title LIKE :query OR content LIKE :query",
-        query: query
-      )
-    end
-
-    if params[:note_type].present?
-      @notes = @notes.where(note_type: params[:note_type])
-    end
-
-    if params[:favorite] == "true"
-      @notes = @notes.favorites
-    end
-
-    if params[:category_id].present?
-      @notes = @notes.where(
-        category: Current.user.categories.find(params[:category_id])
-      )
-    end
+    notes = Note.search_and_filter(Current.user, params)
+    @page = [ params.fetch(:page, 1).to_i, 1 ].max
+    @total_pages = [ (notes.count / 10.0).ceil, 1 ].max
+    @page = [ @page, @total_pages ].min
+    @notes = notes.limit(10).offset((@page - 1) * 10)
+    @tags = Current.user.tags.order(:name)
+    @categories = Current.user.categories.order(:name)
+    @note_types = Current.user.notes.distinct.order(:note_type).pluck(:note_type).compact
   end
 
   def show
@@ -37,12 +21,10 @@ class NotesController < ApplicationController
   end
 
   def create
-    attributes = note_params.except(:category_id)
-    @note = Current.user.notes.new(attributes)
+    @note = Current.user.notes.new(note_params.except(:category_id))
     @note.category = assign_category
 
-    if @note.save
-      update_tags
+    if ActiveRecord::Base.transaction { @note.save && update_tags }
       redirect_to @note, notice: "Note was successfully created."
     else
       render :new, status: :unprocessable_entity
@@ -55,11 +37,7 @@ class NotesController < ApplicationController
   def update
     attributes = note_params.except(:category_id)
 
-    if @note.update(attributes)
-      @note.category = assign_category
-      @note.save!
-      update_tags
-
+    if ActiveRecord::Base.transaction { @note.update(note_params.except(:category_id)) && @note.update!(category: assign_category) && update_tags }
       redirect_to @note, notice: "Note was successfully updated."
     else
       render :edit, status: :unprocessable_entity
@@ -100,7 +78,7 @@ class NotesController < ApplicationController
     tag_names = params[:tag_names].to_s.split(",").map(&:strip).reject(&:blank?).uniq
 
     tags = tag_names.map do |name|
-      Tag.find_or_create_by!(name: name)
+      Current.user.tags.find_or_create_by!(name: name.downcase)
     end
 
     @note.tags = tags
