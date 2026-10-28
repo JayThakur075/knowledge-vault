@@ -1,30 +1,43 @@
-<h1><%= @note.title %></h1>
+<article class="note-detail">
+  <header class="note-detail-header">
+    <div class="note-heading">
+      <p class="eyebrow">TECHNICAL NOTE</p>
+      <h1><%= @note.title %></h1>
+      <div class="note-meta">
+        <span class="badge"><%= @note.note_type.titleize %></span>
+        <% if @note.favorite? %><span class="favorite-badge">★ Favorite</span><% end %>
+        <span><%= @note.category&.name || "Uncategorized" %></span>
+      </div>
+    </div>
+    <nav class="note-actions" aria-label="Note actions">
+      <%= link_to "← Back to notes", notes_path, class: "button button-secondary" %>
+      <%= link_to "Edit note", edit_note_path(@note), class: "button" %>
+    </nav>
+  </header>
 
-<p>
-  <strong>Type:</strong>
-  <%= @note.note_type %>
-</p>
+  <section class="note-content-section">
+    <div class="note-section-heading">
+      <h2>Content</h2>
+      <span class="meta">Updated <%= l(@note.updated_at, format: :long) %></span>
+    </div>
+    <pre class="note-content"><%= @note.content.presence || "No content added." %></pre>
+  </section>
 
-<p>
-  <strong>Favorite:</strong>
-  <%= @note.favorite? ? "Yes" : "No" %>
-</p>
-<p><strong>Category:</strong> <%= @note.category&.name || "Uncategorized" %></p>
-<p><strong>Created:</strong> <%= l(@note.created_at, format: :long) %> · <strong>Updated:</strong> <%= l(@note.updated_at, format: :long) %></p>
+  <section class="note-tags-section" aria-labelledby="note-tags-heading">
+    <h2 id="note-tags-heading">Tags</h2>
+    <% if @note.tags.any? %>
+      <div class="tags">
+        <% @note.tags.each do |tag| %>
+          <%= link_to tag.name, notes_path(tag: tag.name), class: "tag" %>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="muted">No tags added yet.</p>
+    <% end %>
+  </section>
 
-<h2>Content</h2>
-
-<pre><%= @note.content %></pre>
-
-<h2>Tags</h2>
-
-<% if @note.tags.any? %>
-  <% @note.tags.each do |tag| %>
-    <span><%= tag.name %></span>
-  <% end %>
-<% else %>
-  <p>No tags added yet.</p>
-<% end %>
-
-<%= link_to "Edit", edit_note_path(@note) %>
-<%= link_to "Back to Notes", notes_path %>
+  <footer class="note-detail-footer">
+    <span class="meta">Created <%= l(@note.created_at, format: :long) %></span>
+    <%= link_to "← Back to notes", notes_path, class: "text-link" %>
+  </footer>
+</article>

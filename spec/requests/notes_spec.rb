@@ -39,6 +39,16 @@ RSpec.describe "Notes", type: :request do
       get note_path(note)
 
       expect(response).to have_http_status(:success)
+      expect(response.body).to include("note-detail-header", "note-content", "Edit note", "Back to notes")
+    end
+
+    it "renders tags as styled links to the user's filtered notes" do
+      note.tags << user.tags.create!(name: "rails")
+
+      get note_path(note)
+
+      expect(response.body).to include('class="tag"', ">rails</a>")
+      expect(response.body).to include("tag=rails")
     end
   end
 

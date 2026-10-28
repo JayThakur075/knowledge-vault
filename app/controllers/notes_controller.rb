@@ -59,7 +59,7 @@ class NotesController < ApplicationController
   end
 
   def set_note
-    @note = Current.user.notes.find(params[:id])
+    @note = Current.user.notes.includes(:category, :tags).find(params[:id])
   end
 
   def note_params

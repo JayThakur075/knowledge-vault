@@ -165,6 +165,33 @@ form:not(.filters) > div { display: grid; gap: 6px; }
   border-radius: 13px;
   background: var(--white);
 }
+.note-detail { display: grid; gap: 20px; }
+.note-detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 8px 0 18px;
+  border-bottom: 1px solid var(--line);
+}
+.note-heading { min-width: 0; }
+.note-heading .eyebrow { margin: 0 0 8px; }
+.note-heading h1 { margin: 0 0 16px; overflow-wrap: anywhere; }
+.note-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 9px 14px; color: var(--muted); font-size: 14px; }
+.favorite-badge { color: #785b0b; font-size: 13px; font-weight: 700; }
+.note-actions { display: flex; flex: 0 0 auto; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+.note-content-section, .note-tags-section {
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--white);
+}
+.note-section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.note-section-heading h2, .note-tags-section h2 { margin: 0; }
+.note-content { min-height: 120px; margin: 16px 0 0; }
+.note-tags-section .tags { margin-top: 14px; }
+.note-detail-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.text-link { font-weight: 600; text-decoration: none; }
 .card h2, .card h3 { margin: 0; }
 .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .section-heading h2 { margin: 28px 0 12px; }
@@ -213,6 +240,10 @@ pre { overflow-x: auto; padding: 22px; border-radius: 10px; background: #142522;
   .container { margin: 30px auto; padding: 0 16px 48px; }
   .stats { grid-template-columns: repeat(2, 1fr); }
   .section-heading { align-items: flex-start; }
+  .note-detail-header { flex-direction: column; }
+  .note-actions { justify-content: flex-start; }
+  .note-section-heading { align-items: flex-start; flex-direction: column; }
+  .note-detail-footer { align-items: flex-start; flex-direction: column; }
   .filters { align-items: stretch; }
   .filters > * { width: 100%; }
 }
