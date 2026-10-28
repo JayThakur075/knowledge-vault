@@ -10,7 +10,7 @@
         <%= link_to category.name, notes_path(category_id: category.id) %>
       </h2>
 
-      <p><%= pluralize(category.notes.count, "note") %></p>
+      <p><%= pluralize(@note_counts.fetch(category.id, 0), "note") %></p>
 
       <%= link_to "Edit", edit_category_path(category) %>
 

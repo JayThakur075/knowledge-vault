@@ -4,6 +4,7 @@ class CategoriesController < ApplicationController
 
   def index
     @categories = Current.user.categories.order(:name)
+    @note_counts = Current.user.notes.group(:category_id).count
   end
 
   def new
