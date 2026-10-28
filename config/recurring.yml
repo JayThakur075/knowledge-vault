@@ -9,6 +9,11 @@
 #     priority: 2
 #     schedule: at 5am every day
 
+development:
+  weekly_knowledge_review:
+    class: WeeklyKnowledgeReviewJob
+    schedule: every monday at 9am
+
 production:
   weekly_knowledge_review:
     class: WeeklyKnowledgeReviewJob

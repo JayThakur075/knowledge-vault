@@ -1,6 +1,6 @@
 <%= form_with model: @note do |form| %>
   <% if @note.errors.any? %>
-    <div>
+    <div class="errors">
       <h3><%= pluralize(@note.errors.count, "error") %> prevented this note from being saved:</h3>
 
       <ul>

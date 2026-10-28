@@ -75,8 +75,21 @@ RSpec.describe "Knowledge Vault features", type: :request do
     expect(response).to redirect_to(link_path(link))
     expect(link.tags.pluck(:name)).to contain_exactly("rails", "docs")
 
+    patch link_path(link), params: { link: { title: "Rails documentation", url: "https://guides.rubyonrails.org" }, tag_names: "rails, reference" }
+    expect(link.reload.title).to eq("Rails documentation")
+    expect(link.tags.pluck(:name)).to contain_exactly("rails", "reference")
+
     sign_in(other_user, password)
     get link_path(link)
     expect(response).to have_http_status(:not_found)
+
+    expect { delete link_path(link) }.not_to change(Link, :count)
+  end
+
+  it "rejects unsafe saved link schemes" do
+    sign_in(user, password)
+    post links_path, params: { link: { title: "Unsafe", url: "javascript:alert(1)" } }
+    expect(response).to have_http_status(:unprocessable_content)
+    expect(user.links).to be_empty
   end
 end

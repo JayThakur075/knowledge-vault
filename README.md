@@ -60,17 +60,17 @@ git diff --check
 
 Production uses Solid Queue and the included recurring schedule enqueues a weekly review every Monday at 9am. The job processes users in batches and writes only each user's stale-note count to that user's cache key.
 
-Start a separate worker with:
+In development, `bin/dev` starts Puma with the Solid Queue supervisor, so local jobs use SQLite and run without a separate process. To run a worker separately instead, unset `SOLID_QUEUE_IN_PUMA` and use:
 
 ```sh
 bin/jobs
 ```
 
-The Kamal template is configured to run the Solid Queue supervisor in Puma for a single server. For separate worker hosts, disable `SOLID_QUEUE_IN_PUMA` and run `bin/jobs` on a worker with access to the same queue database. Development uses Rails' default async adapter unless configured otherwise.
+The Kamal template is configured to run the Solid Queue supervisor in Puma for a single server. For separate worker hosts, disable `SOLID_QUEUE_IN_PUMA` and run `bin/jobs` on a worker with access to the same queue database. Development uses Solid Queue and `bin/dev` starts its supervisor in Puma.
 
 ## Caching
 
-Production uses Solid Cache in the dedicated `cache` SQLite database. Dashboard statistics use a cache key scoped to the signed-in user's ID and data version, with a five-minute expiry. Development uses an in-memory cache; tests use a null cache store. Run `bin/rails db:prepare` after updating the application to prepare configured databases.
+Development and production use Solid Cache in separate SQLite databases. Dashboard statistics use a cache key scoped to the signed-in user's ID and data version, with a five-minute expiry. Tests use a null cache store. Run `bin/rails db:prepare` after updating the application to prepare configured databases.
 
 ## Docker
 

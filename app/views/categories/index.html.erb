@@ -1,29 +1,28 @@
 <h1>Categories</h1>
 
-<%= link_to "New Category", new_category_path %>
-<%= link_to "Back to Notes", notes_path %>
+<div class="page-actions"><%= link_to "New category", new_category_path, class: "button" %><%= link_to "Back to notes", notes_path, class: "button button-secondary" %></div>
 
 <% if @categories.any? %>
   <% @categories.each do |category| %>
-    <div>
+    <article class="card category-card">
       <h2>
         <%= link_to category.name, notes_path(category_id: category.id) %>
       </h2>
 
       <p><%= pluralize(@note_counts.fetch(category.id, 0), "note") %></p>
 
-      <%= link_to "Edit", edit_category_path(category) %>
+      <%= link_to "Edit", edit_category_path(category), class: "button button-secondary button-small" %>
 
       <%= button_to "Delete",
         category_path(category),
         method: :delete,
+        class: "button-danger",
         form: {
           data: {
             turbo_confirm: "Delete this category?"
           }
         } %>
-    </div>
-    <hr>
+    </article>
   <% end %>
 <% else %>
   <p>You haven't created any categories yet.</p>

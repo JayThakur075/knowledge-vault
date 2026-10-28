@@ -6,4 +6,6 @@ class Tag < ApplicationRecord
   has_many :links, through: :link_tags
 
   validates :name, presence: true, uniqueness: { scope: :user_id }
+
+  normalizes :name, with: ->(name) { name.strip.downcase }
 end

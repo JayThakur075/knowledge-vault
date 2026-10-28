@@ -18,7 +18,7 @@
       <p><%= truncate(note.content.to_s, length: 180) %></p>
       <div class="meta"><%= "★ Favorite · " if note.favorite? %><%= note.category&.name || "Uncategorized" %> · Updated <%= l(note.updated_at, format: :short) %></div>
       <div class="tags"><% note.tags.each do |tag| %><%= link_to "##{tag.name}", notes_path(request.query_parameters.merge(tag: tag.name, page: nil)), class: "tag" %><% end %></div>
-      <div class="actions"><%= link_to "Edit", edit_note_path(note) %><%= button_to "Delete", note_path(note), method: :delete, form: { data: { turbo_confirm: "Delete this note?" } }, class: "link-button" %></div>
+      <div class="actions"><%= link_to "Edit", edit_note_path(note), class: "button button-secondary button-small" %><%= button_to "Delete", note_path(note), method: :delete, form: { data: { turbo_confirm: "Delete this note?" } }, class: "button-danger" %></div>
     </article>
   <% end %>
   <% if @total_pages > 1 %><nav class="pagination" aria-label="Pagination"><%= link_to "← Previous", notes_path(request.query_parameters.merge(page: @page - 1)), class: (@page == 1 ? "disabled" : nil) unless @page == 1 %><span>Page <%= @page %> of <%= @total_pages %></span><%= link_to "Next →", notes_path(request.query_parameters.merge(page: @page + 1)) unless @page == @total_pages %></nav><% end %>

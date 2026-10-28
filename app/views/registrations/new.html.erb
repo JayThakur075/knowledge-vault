@@ -1,4 +1,7 @@
-<h1>Create Your Knowledge Vault Account</h1>
+<section class="auth-card">
+<p class="eyebrow">START YOUR PERSONAL KNOWLEDGE BASE</p>
+<h1>Create your account</h1>
+<p class="muted">Save useful things you learn and find them again when you need them.</p>
 
 <%= form_with model: @user, url: sign_up_path do |form| %>
   <% if @user.errors.any? %>
@@ -29,11 +32,11 @@
   </div>
 
   <div>
-    <%= form.submit "Sign Up" %>
+    <%= form.submit "Create account", class: "button button-primary" %>
   </div>
 <% end %>
 
 <p>
-  Already have an account?
-  <%= link_to "Sign in", new_session_path %>
+  Already have an account? <%= link_to "Sign in", new_session_path %>
 </p>
+</section>

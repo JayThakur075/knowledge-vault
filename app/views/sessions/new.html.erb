@@ -1,16 +1,15 @@
-<%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
-<%= tag.div(flash[:notice], style: "color:green") if flash[:notice] %>
+<section class="auth-card">
+  <p class="eyebrow">WELCOME BACK</p>
+  <h1>Sign in to your vault</h1>
+  <p class="muted">Pick up where you left off and find what you have learned.</p>
 
-<%= form_with url: session_path do |form| %>
-  <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address] %><br>
-  <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72 %><br>
-  <%= form.submit "Sign in" %>
-<% end %>
-<br>
+  <%= form_with url: session_path, class: "auth-form" do |form| %>
+    <div><%= form.label :email_address, "Email address" %><%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "you@example.com", value: params[:email_address] %></div>
+    <div><%= form.label :password %><%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72 %></div>
+    <%= form.submit "Sign in", class: "button button-primary" %>
+  <% end %>
 
-<%= link_to "Forgot password?", new_password_path %>
+  <p><%= link_to "Forgot password?", new_password_path %></p>
 
-<p>
-  Don't have an account?
-  <%= link_to "Sign up", sign_up_path %>
-</p>
+  <p class="auth-switch">Don't have an account? <%= link_to "Create an account", sign_up_path %></p>
+</section>

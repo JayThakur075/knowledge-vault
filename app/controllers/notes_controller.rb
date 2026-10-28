@@ -35,8 +35,6 @@ class NotesController < ApplicationController
   end
 
   def update
-    attributes = note_params.except(:category_id)
-
     if ActiveRecord::Base.transaction { @note.update(note_params.except(:category_id)) && @note.update!(category: assign_category) && update_tags }
       redirect_to @note, notice: "Note was successfully updated."
     else
