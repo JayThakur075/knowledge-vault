@@ -36,7 +36,12 @@ bin/setup
 bin/dev
 ```
 
-Open <http://localhost:3000>. New users can register at `/sign_up`. No seed account is required. `bin/rails server` also starts the web process without the development process manager.
+Open <http://localhost:3000>. You can register at `/sign_up` or use the development demo account:
+
+- Email: `demo@knowledgevault.local`
+- Password: `VaultDemo123!`
+
+To clear the development app data and reload the demo records, run `RAILS_ENV=development bin/rails db:seed:replant`. This removes existing development records before loading the demo data. Seeds are disabled in production. `bin/rails server` also starts the web process without the development process manager.
 
 ## Database
 
