@@ -1,10 +1,10 @@
 Rails.application.routes.draw do
-  get "registrations/new"
-  get "registrations/create"
-  root "notes#index"
+  root "dashboard#show"
+  get "dashboard", to: "dashboard#show", as: :dashboard
   resources :notes
+  resources :links
   resources :categories, except: [ :show ]
-  resource :session
+  resource :session, only: %i[new create destroy]
   resources :passwords, param: :token
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -16,8 +16,6 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  # Defines the root path route ("/")
-  # root "posts#index"
   get  "/sign_up", to: "registrations#new"
   post "/sign_up", to: "registrations#create"
 end

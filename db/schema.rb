@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_27_085139) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_28_092000) do
   create_table "categories", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "name", null: false
@@ -18,6 +18,29 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_085139) do
     t.datetime "updated_at", null: false
     t.index ["user_id", "name"], name: "index_categories_on_user_id_and_name", unique: true
     t.index ["user_id"], name: "index_categories_on_user_id"
+  end
+
+  create_table "link_tags", force: :cascade do |t|
+    t.integer "link_id", null: false
+    t.integer "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["link_id", "tag_id"], name: "index_link_tags_on_link_id_and_tag_id", unique: true
+    t.index ["link_id"], name: "index_link_tags_on_link_id"
+    t.index ["tag_id"], name: "index_link_tags_on_tag_id"
+  end
+
+  create_table "links", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "category_id"
+    t.string "title", null: false
+    t.string "url", null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_links_on_category_id"
+    t.index ["user_id", "url"], name: "index_links_on_user_id_and_url"
+    t.index ["user_id"], name: "index_links_on_user_id"
   end
 
   create_table "note_tags", force: :cascade do |t|
@@ -56,7 +79,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_085139) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_tags_on_name", unique: true
+    t.integer "user_id", null: false
+    t.index ["user_id", "name"], name: "index_tags_on_user_id_and_name", unique: true
+    t.index ["user_id"], name: "index_tags_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -68,9 +93,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_27_085139) do
   end
 
   add_foreign_key "categories", "users"
+  add_foreign_key "link_tags", "links"
+  add_foreign_key "link_tags", "tags"
+  add_foreign_key "links", "categories"
+  add_foreign_key "links", "users"
   add_foreign_key "note_tags", "notes"
   add_foreign_key "note_tags", "tags"
   add_foreign_key "notes", "categories"
   add_foreign_key "notes", "users"
   add_foreign_key "sessions", "users"
+  add_foreign_key "tags", "users"
 end

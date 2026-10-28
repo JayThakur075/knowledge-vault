@@ -1,0 +1,4 @@
+<%= form_with model: @link do |form| %>
+  <% if @link.errors.any? %><div class="errors"><h2>Please fix these errors:</h2><ul><% @link.errors.full_messages.each do |message| %><li><%= message %></li><% end %></ul></div><% end %>
+  <div><%= form.label :title %><%= form.text_field :title, required: true %></div><div><%= form.label :url %><%= form.url_field :url, required: true, placeholder: "https://..." %></div><div><%= form.label :description %><%= form.text_area :description, rows: 5 %></div><div><%= form.label :category_id, "Category" %><%= form.collection_select :category_id, Current.user.categories.order(:name), :id, :name, include_blank: "No category" %></div><div><%= label_tag :tag_names, "Tags (comma-separated)" %><%= text_field_tag :tag_names, @link.tags.map(&:name).join(", ") %></div><%= form.submit class: "button" %>
+<% end %>
