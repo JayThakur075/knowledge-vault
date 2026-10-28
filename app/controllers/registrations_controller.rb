@@ -24,5 +24,5 @@ class RegistrationsController < ApplicationController
       :password,
       :password_confirmation
     )
-  end 
+  end
 end

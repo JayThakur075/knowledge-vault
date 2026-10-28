@@ -31,5 +31,12 @@ RSpec.describe "Registrations", type: :request do
 
       expect(response).to have_http_status(:redirect)
     end
+
+    it "rejects duplicate emails and mismatched passwords" do
+      User.create!(email_address: "newuser@example.com", password: "Password123!", password_confirmation: "Password123!")
+      expect { post sign_up_path, params: valid_params }.not_to change(User, :count)
+      post sign_up_path, params: { user: valid_params[:user].merge(email_address: "different@example.com", password_confirmation: "no-match") }
+      expect(response).to have_http_status(:unprocessable_content)
+    end
   end
 end
