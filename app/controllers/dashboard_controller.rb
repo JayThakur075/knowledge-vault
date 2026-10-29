@@ -1,8 +1,7 @@
 class DashboardController < ApplicationController
   def show
     user = Current.user
-    version = [ user.notes.count, user.notes.maximum(:updated_at), user.categories.count, user.categories.maximum(:updated_at), user.tags.count, user.tags.maximum(:updated_at) ]
-    @stats = Rails.cache.fetch([ "dashboard-stats", user.id, version ], expires_in: 5.minutes) do
+    @stats = Rails.cache.fetch([ "dashboard-stats", user.id, user.updated_at ], expires_in: 5.minutes) do
       { notes: user.notes.count, categories: user.categories.count, tags: user.tags.count, favorites: user.notes.favorites.count }
     end
     @note_count = @stats[:notes]

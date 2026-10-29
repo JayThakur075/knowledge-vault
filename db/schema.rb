@@ -20,6 +20,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_28_092000) do
     t.index ["user_id"], name: "index_categories_on_user_id"
   end
 
+  create_table "legacy_unassigned_tags", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "link_tags", force: :cascade do |t|
     t.integer "link_id", null: false
     t.integer "tag_id", null: false

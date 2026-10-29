@@ -1,5 +1,5 @@
 class Note < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, touch: true
   belongs_to :category, optional: true
 
   has_many :note_tags, dependent: :destroy
@@ -7,6 +7,7 @@ class Note < ApplicationRecord
 
   validates :title, presence: true
   validates :note_type, presence: true
+  validate :category_belongs_to_user
 
   scope :recent, -> { order(created_at: :desc) }
   scope :favorites, -> { where(favorite: true) }
@@ -24,5 +25,13 @@ class Note < ApplicationRecord
     notes = notes.where(category_id: user.categories.select(:id).where(id: filters[:category_id])) if filters[:category_id].present?
     notes = notes.joins(:tags).where(tags: { id: user.tags.where(name: filters[:tag]).select(:id) }) if filters[:tag].present?
     notes.distinct
+  end
+
+  private
+
+  def category_belongs_to_user
+    return if category.nil? || category.user == user
+
+    errors.add(:category, "must belong to the same user")
   end
 end

@@ -1,5 +1,5 @@
 class Tag < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, touch: true
   has_many :note_tags, dependent: :destroy
   has_many :notes, through: :note_tags
   has_many :link_tags, dependent: :destroy

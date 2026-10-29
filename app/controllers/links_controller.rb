@@ -11,7 +11,9 @@ class LinksController < ApplicationController
     @links = @links.joins(:tags).where(tags: { id: Current.user.tags.where(name: params[:tag]).select(:id) }) if params[:tag].present?
   end
 
-  def show; end
+  def show
+  end
+
   def new
     @link = Current.user.links.new
   end
@@ -26,7 +28,8 @@ class LinksController < ApplicationController
     end
   end
 
-  def edit; end
+  def edit
+  end
 
   def update
     if ActiveRecord::Base.transaction { @link.update(link_params.except(:category_id)) && @link.update!(category: owned_category) && update_tags }
@@ -42,15 +45,19 @@ class LinksController < ApplicationController
   end
 
   private
+
   def set_link
     @link = Current.user.links.find(params[:id])
   end
+
   def link_params
     params.require(:link).permit(:title, :url, :description, :category_id)
   end
+
   def owned_category
     Current.user.categories.find(link_params[:category_id]) if link_params[:category_id].present?
   end
+
   def update_tags
     names = params[:tag_names].to_s.split(",").map { |name| name.strip.downcase }.reject(&:blank?).uniq
     @link.tags = names.map { |name| Current.user.tags.find_or_create_by!(name: name) }
