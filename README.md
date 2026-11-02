@@ -109,7 +109,41 @@ Never bake database URLs, `RAILS_MASTER_KEY`, or other credentials into the imag
 
 ## Deployment preparation
 
-Kamal is included, but no public deployment has been performed. Before deployment, set a real server address, image registry, domain, database URLs, and credentials in `config/deploy.yml` and `.kamal/secrets`. Configure TLS and PostgreSQL backups. Keep secrets in environment or the platform's secret manager, not in Git.
+### Live application
+
+Knowledge Vault is deployed at <https://knowledge-vault-722z.onrender.com/>.
+
+The public deployment uses these services:
+
+- **Render** hosts the Rails application as a Docker-based web service and builds the image from the repository's `Dockerfile`.
+- **Neon** provides the production PostgreSQL branch. The app, Solid Cache, Solid Queue, and Solid Cable use separate databases on that branch.
+- **GitHub Actions** runs the repository's CI checks when changes are pushed to `main` or a pull request is opened. Render deploys the application from the repository after a successful push, according to the service's auto-deploy setting.
+
+Rails handles user authentication and application functionality. The app does not currently use an external email, file-storage, or authentication provider.
+
+### Render environment variables
+
+Set these in the Render service's **Environment** settings. Never put their values in this README, source control, or public logs.
+
+| Variable | Purpose |
+| --- | --- |
+| `RAILS_MASTER_KEY` | Decrypts Rails credentials in production. |
+| `DATABASE_URL` | Pooled Neon connection for normal application database traffic. |
+| `DATABASE_URL_UNPOOLED` | Direct Neon connection used while preparing/migrating the main database at startup. |
+| `CACHE_DATABASE_URL` | Pooled connection for Solid Cache. |
+| `CACHE_DATABASE_URL_UNPOOLED` | Direct connection used to prepare the cache database. |
+| `QUEUE_DATABASE_URL` | Pooled connection for Solid Queue. |
+| `QUEUE_DATABASE_URL_UNPOOLED` | Direct connection used to prepare the queue database. |
+| `CABLE_DATABASE_URL` | Pooled connection for Solid Cable. |
+| `CABLE_DATABASE_URL_UNPOOLED` | Direct connection used to prepare the cable database. |
+
+Use Neon connection strings for the production branch, with each URL pointing to its corresponding database. The pooled host includes `-pooler`; the unpooled host does not. Keep `sslmode=require` and `channel_binding=require` where provided. The current Render pooled URLs should omit the extra `options=endpoint...` parameter so it does not conflict with endpoint identification through TLS SNI.
+
+Render provides the `PORT` variable used by the web process; `HTTP_PORT` is not required by this application. `SOLID_QUEUE_IN_PUMA=true` runs the queue supervisor in the web process for this single-service deployment. `WEB_CONCURRENCY` is optional and can be set based on the service's available resources.
+
+To deploy an update, push it to `main` and confirm the GitHub Actions checks pass. Check the Render service's **Events** and **Deploy logs** for build and startup status. After deployment, verify the live URL and `/up` health endpoint. Keep production credentials in Render's environment settings, not in Git.
+
+Kamal configuration is also included as a deployment template, but the live application is hosted on Render. A production database backup procedure should be configured in Neon before relying on the deployment for important data.
 
 ## Architecture
 
