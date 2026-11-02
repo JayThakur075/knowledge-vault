@@ -42,9 +42,13 @@ env:
   secret:
     - RAILS_MASTER_KEY
     - DATABASE_URL
+    - DATABASE_URL_UNPOOLED
     - CACHE_DATABASE_URL
+    - CACHE_DATABASE_URL_UNPOOLED
     - QUEUE_DATABASE_URL
+    - QUEUE_DATABASE_URL_UNPOOLED
     - CABLE_DATABASE_URL
+    - CABLE_DATABASE_URL_UNPOOLED
   clear:
     # Run the Solid Queue Supervisor inside the web server's Puma process to do jobs.
     # When you start using multiple servers, you should split out job processing to a dedicated machine.
@@ -56,8 +60,8 @@ env:
     # Set number of cores available to the application on each server (default: 1).
     # WEB_CONCURRENCY: 2
 
-    # DATABASE_URL plus CACHE_DATABASE_URL, QUEUE_DATABASE_URL, and
-    # CABLE_DATABASE_URL point to the PostgreSQL databases configured above.
+    # *_DATABASE_URL values are pooled for app traffic. Matching *_UNPOOLED
+    # values are used for schema preparation and other session-level work.
 
     # Log everything from Rails
     # RAILS_LOG_LEVEL: debug

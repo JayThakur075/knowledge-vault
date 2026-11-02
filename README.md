@@ -53,7 +53,9 @@ bin/rails db:prepare
 
 The existing ignored SQLite files under `storage/` are left untouched, but the app no longer reads them. PostgreSQL databases start with the current schema; run `bin/rails db:seed` to load the demo account and sample content. The tag ownership migration preserves note assignments and splits a formerly shared tag into per-user copies when needed.
 
-For production, configure four PostgreSQL connection URLs. `DATABASE_URL` is the main app database; `CACHE_DATABASE_URL`, `QUEUE_DATABASE_URL`, and `CABLE_DATABASE_URL` point to separate databases on the same PostgreSQL server. Do not point these variables at the same database. Keep these URLs in the host's secret/environment settings, not in Git.
+For production, configure four PostgreSQL databases. `DATABASE_URL` is the main app database; `CACHE_DATABASE_URL`, `QUEUE_DATABASE_URL`, and `CABLE_DATABASE_URL` point to separate databases on the same PostgreSQL server. Do not point these variables at the same database. Use pooled URLs for app traffic and matching `*_UNPOOLED` URLs for schema preparation and other session-level work. Keep all URLs in the host's secret/environment settings, not in Git.
+
+The Neon CLI configuration is in `neon.ts`; `.neon` links this checkout to the selected project and branch. In development, `dotenv-rails` loads branch-specific values from the ignored `.env.development.local` before `.env.local`, keeping routine local work off the production branch. The local environment file includes pooled and direct URLs for the app, cache, queue, and cable databases. The generated endpoint option supports older local libpq clients that do not send TLS SNI.
 
 ## Tests and code style
 
@@ -87,15 +89,19 @@ The repository includes a production Dockerfile and Kamal configuration. Build l
 docker build -t knowledge-vault .
 ```
 
-Run with the four database URLs and a secret key set in your environment:
+Run with the four pooled URLs, their four direct `*_UNPOOLED` equivalents, and a secret key set in your environment:
 
 ```sh
 docker run --rm -p 3000:80 \
   -e RAILS_MASTER_KEY \
   -e DATABASE_URL \
+  -e DATABASE_URL_UNPOOLED \
   -e CACHE_DATABASE_URL \
+  -e CACHE_DATABASE_URL_UNPOOLED \
   -e QUEUE_DATABASE_URL \
+  -e QUEUE_DATABASE_URL_UNPOOLED \
   -e CABLE_DATABASE_URL \
+  -e CABLE_DATABASE_URL_UNPOOLED \
   knowledge-vault
 ```
 

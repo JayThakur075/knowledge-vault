@@ -2,7 +2,17 @@
 
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
-  ./bin/rails db:prepare
+  # Neon recommends direct connections for schema migrations. Keep pooled URLs
+  # in the web process, but use *_UNPOOLED URLs while preparing databases.
+  database_env=()
+  for variable in DATABASE_URL CACHE_DATABASE_URL QUEUE_DATABASE_URL CABLE_DATABASE_URL; do
+    unpooled_variable="${variable}_UNPOOLED"
+    if [[ -n "${!unpooled_variable:-}" ]]; then
+      database_env+=( "${variable}=${!unpooled_variable}" )
+    fi
+  done
+
+  env "${database_env[@]}" ./bin/rails db:prepare
 fi
 
 exec "${@}"
