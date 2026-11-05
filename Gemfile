@@ -41,7 +41,7 @@ gem "thruster", require: false
 
 group :development, :test do
   # Load local Neon and other environment variables from .env.local.
-  gem "dotenv-rails", "~> 3.1"
+  gem "dotenv-rails", "~> 3.2"
 
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
